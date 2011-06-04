@@ -1,8 +1,3 @@
-/**
- * remember to comment on: http://stackoverflow.com/questions/4991768/build-tool-for-ios-and-mac-projects
- * also check: https://github.com/jvoegele/gradle-android-plugin
- *
- */
 
 description = 'Gradle build for iOS'
 defaultTasks = ['tasks']
@@ -38,9 +33,30 @@ task compile {
 	}
 }
 
+/**
+ * For this to work you will need to edit your
+ *
+ * Take a look at:
+ *
+ * * http://longweekendmobile.com/2011/04/17/xcode4-running-application-tests-from-the-command-line-in-ios/
+ * * RunPlatformUnitTests.diff
+ *
+ */
+task test {
+	group = ios
+	description = 'Test the compiled source code using the default Xcode4 integrated OCUnit/SenTestingKit'
+	doLast {
+		exec {
+			executable = 'xcodebuild'
+			args = ['-target', "${PROJECT_NAME}Tests", '-sdk', 'iphonesimulator', '-configuration', 'Debug', 'build']
+		}
+	}
+}
+
+
 task('package', dependsOn: compile) {
 	group = ios
-	description = 'Take the compiled code and package it in a distributable format: eg: app.zip'
+	description = 'Take the compiled source code and package it in a distributable format: eg: app.zip'
 
 	def destfile = "${PROJECT_NAME}-${DEFAULT_APP_VERSION}-${CONFIGURATION}.zip"
 
@@ -62,12 +78,5 @@ task('package', dependsOn: compile) {
 		}
 
 		delete zipFile
-	}
-}
-
-
-task hello {
-	doLast {
-		println 'Hello world!'
 	}
 }
