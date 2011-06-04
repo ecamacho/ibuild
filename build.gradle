@@ -1,0 +1,73 @@
+/**
+ * remember to comment on: http://stackoverflow.com/questions/4991768/build-tool-for-ios-and-mac-projects
+ * also check: https://github.com/jvoegele/gradle-android-plugin
+ *
+ */
+
+description = 'Gradle build for iOS'
+defaultTasks = ['tasks']
+ios = ' iOS'
+
+PROJECT_NAME = 'iBuild'
+
+BUILD_DIR = 'build'
+CONFIGURATION = 'Release' // 'Release' or 'Debug'
+SDK_TARGET_NAME = 'iphonesimulator' // 'iphonesimulator' or 'iphoneos'
+DEFAULT_APP_VERSION = '0.0.1'
+
+task clean(type: Delete) {
+	group = ios
+	description = 'Cleanup the project of whatever the build process has created leaving it spic and span.'
+	delete "${SDK_TARGET_NAME}"
+	doLast {
+		exec {
+			executable = 'xcodebuild'
+			args = ['-alltargets', 'clean']
+		}
+	}
+}
+
+task compile {
+	group = ios
+	description = 'Compilation of sources'
+	doLast {
+		exec {
+			executable = 'xcodebuild'
+			args = ['-sdk', "${SDK_TARGET_NAME}", '-configuration', "${CONFIGURATION}"]
+		}
+	}
+}
+
+task('package', dependsOn: compile) {
+	group = ios
+	description = 'Take the compiled code and package it in a distributable format: eg: app.zip'
+
+	def destfile = "${PROJECT_NAME}-${DEFAULT_APP_VERSION}-${CONFIGURATION}.zip"
+
+	doLast {
+
+		def wd = "${BUILD_DIR}/${CONFIGURATION}-${SDK_TARGET_NAME}/"
+
+		exec {
+			executable = 'zip'
+			workingDir = "${wd}"
+			args = ["-yrq", "${destfile}", "${PROJECT_NAME}.app", "${PROJECT_NAME}.app.dSYM"]
+		}
+
+		zipFile = "${wd}/${destfile}"
+
+		copy {
+			from zipFile
+			into '.'
+		}
+
+		delete zipFile
+	}
+}
+
+
+task hello {
+	doLast {
+		println 'Hello world!'
+	}
+}
