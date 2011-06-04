@@ -1,0 +1,28 @@
+:tasks
+
+------------------------------------------------------------
+Root Project - Gradle build for iOS
+------------------------------------------------------------
+
+Default tasks: tasks
+
+ iOS tasks
+----------
+clean - Cleanup the project of whatever the build process has created leaving it spic and span.
+compile - Compilation of sources
+package - Take the compiled source code and package it in a distributable format: eg: app.zip
+test - Test the compiled source code using the default Xcode4 integrated OCUnit/SenTestingKit
+
+Help tasks
+----------
+dependencies - Displays the dependencies of root project 'ibuild'.
+help - Displays a help message
+projects - Displays the sub-projects of root project 'ibuild'.
+properties - Displays the properties of root project 'ibuild'.
+tasks - Displays the tasks in root project 'ibuild'.
+
+To see all tasks and more detail, run with --all.
+
+BUILD SUCCESSFUL
+
+Total time: 4.243 secs
