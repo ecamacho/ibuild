@@ -3,7 +3,7 @@ description = 'Gradle build for iOS'
 defaultTasks = ['tasks']
 ios = ' iOS'
 
-PROJECT_NAME = 'iBuild'
+PROJECT_NAME = 'PROJECT_NAME' // PROJECT_NAME must be equal to MAIN_TARGET_NAME
 
 BUILD_DIR = 'build'
 CONFIGURATION = 'Release' // 'Release' or 'Debug'
@@ -13,7 +13,7 @@ DEFAULT_APP_VERSION = '0.0.1'
 task clean(type: Delete) {
 	group = ios
 	description = 'Cleanup the project of whatever the build process has created leaving it spic and span.'
-	delete "${SDK_TARGET_NAME}"
+	delete "${BUILD_DIR}"
 	doLast {
 		exec {
 			executable = 'xcodebuild'
@@ -44,7 +44,7 @@ task compile {
  */
 task test {
 	group = ios
-	description = 'Test the compiled source code using the default Xcode4 integrated OCUnit/SenTestingKit'
+	description = 'Test the compiled source code using the default XCode4 integrated OCUnit/SenTestingKit'
 	doLast {
 		exec {
 			executable = 'xcodebuild'
