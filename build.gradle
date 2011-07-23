@@ -10,6 +10,23 @@ CONFIGURATION = 'Release' // 'Release' or 'Debug'
 SDK_TARGET_NAME = 'iphonesimulator' // 'iphonesimulator' or 'iphoneos'
 DEFAULT_APP_VERSION = '0.0.1'
 
+
+task project_name << {
+	group = ios
+	description = 'extract the name of the project from the .pbxproj'
+
+    new ByteArrayOutputStream().withStream { os ->
+        def result = exec {
+            executable = 'xcodebuild'
+            args = ['-list']
+            standardOutput = os
+        }
+        def outputAsString = os.toString()
+        def matchLastChangedRev = outputAsString =~ /Information about project "([^"]+)":/
+        project.PROJECT_NAME = matchLastChangedRev[0][1]
+    }
+}
+
 task clean(type: Delete) {
 	group = ios
 	description = 'Cleanup the project of whatever the build process has created leaving it spic and span.'
@@ -54,13 +71,13 @@ task test {
 }
 
 
-task('package', dependsOn: compile) {
+task('package', dependsOn: [compile, project_name]) {
 	group = ios
 	description = 'Take the compiled source code and package it in a distributable format: eg: app.zip'
 
-	def destfile = "${PROJECT_NAME}-${DEFAULT_APP_VERSION}-${CONFIGURATION}.zip"
-
 	doLast {
+		
+		def destfile = "${PROJECT_NAME}-${DEFAULT_APP_VERSION}-${CONFIGURATION}.zip"
 
 		def wd = "${BUILD_DIR}/${CONFIGURATION}-${SDK_TARGET_NAME}/"
 
